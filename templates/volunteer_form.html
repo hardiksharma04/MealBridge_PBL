@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Add volunteer | MealBridge{% endblock %}
+{% block content %}
+<section class="form-page"><a class="back-link" href="{{ url_for('home') }}">← Back to home</a><span class="eyebrow">LOCAL PICKUP HELP</span><h1>Register a volunteer</h1><p class="form-intro">Volunteers are connected to an NGO and can be assigned to that NGO's food claims.</p>
+{% if ngos %}
+<form class="form-card" method="post">
+  <label>NGO<select name="ngo_id" required><option value="">Choose an NGO</option>{% for ngo in ngos %}<option value="{{ ngo.ngo_id }}">{{ ngo.ngo_name }}</option>{% endfor %}</select></label>
+  <label>Volunteer name<input name="volunteer_name" maxlength="100" required placeholder="Full name"></label>
+  <label>Phone <span class="optional">Optional</span><input name="phone" maxlength="20" placeholder="Contact number"></label>
+  <button class="button button-primary" type="submit">Save volunteer</button>
+</form>
+{% else %}<div class="empty-state"><h3>Add an NGO first</h3><p>Each volunteer must belong to an NGO.</p><a class="button button-primary" href="{{ url_for('new_ngo') }}">Register an NGO</a></div>{% endif %}
+</section>
+{% endblock %}

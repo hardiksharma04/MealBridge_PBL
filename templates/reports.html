@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Reports | MealBridge{% endblock %}
+{% block content %}
+<section class="page-title"><span class="eyebrow">PROJECT SNAPSHOT</span><h1>Community reports</h1><p class="form-intro">A simple summary of food offers and NGO participation.</p></section>
+<div class="report-grid"><section class="table-card"><div class="card-heading"><span class="eyebrow">DONOR CONTRIBUTIONS</span><h2>Food offered</h2></div><table><thead><tr><th>Donor</th><th>Total (kg)</th></tr></thead><tbody>{% for donor in donors %}<tr><td>{{ donor.donor_name }}</td><td><b>{{ donor.total_food_kg }}</b></td></tr>{% else %}<tr><td colspan="2">No donors yet.</td></tr>{% endfor %}</tbody></table></section>
+<section class="table-card"><div class="card-heading"><span class="eyebrow">COMMUNITY RESPONSE</span><h2>NGO claims</h2></div><table><thead><tr><th>NGO</th><th>Claims</th></tr></thead><tbody>{% for ngo in ngos %}<tr><td>{{ ngo.ngo_name }}</td><td><b>{{ ngo.claims_made }}</b></td></tr>{% else %}<tr><td colspan="2">No NGOs yet.</td></tr>{% endfor %}</tbody></table></section></div>
+<section class="table-card volunteer-report"><div class="card-heading"><span class="eyebrow">PICKUP ACTIVITY</span><h2>Volunteer pickups</h2></div><table><thead><tr><th>Volunteer</th><th>NGO</th><th>Assigned</th><th>Picked up</th></tr></thead><tbody>{% for volunteer in volunteers %}<tr><td>{{ volunteer.volunteer_name }}</td><td>{{ volunteer.ngo_name }}</td><td>{{ volunteer.assigned_pickups }}</td><td>{{ volunteer.completed_pickups }}</td></tr>{% else %}<tr><td colspan="4">No volunteers yet.</td></tr>{% endfor %}</tbody></table></section>
+{% endblock %}

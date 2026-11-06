@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Post food | MealBridge{% endblock %}
+{% block content %}
+<section class="form-page"><a class="back-link" href="{{ url_for('home') }}">← Back to home</a><span class="eyebrow">SHARE SURPLUS FOOD</span><h1>Post a food listing</h1><p class="form-intro">Tell nearby NGOs what food is ready for collection and when it should be picked up.</p>
+{% if donors %}
+<form class="form-card" method="post">
+  <label>Donor<select name="donor_id" required><option value="">Choose a donor</option>{% for donor in donors %}<option value="{{ donor.donor_id }}">{{ donor.donor_name }}</option>{% endfor %}</select></label>
+  <label>Food name<input name="food_name" maxlength="100" required placeholder="e.g. Vegetable meals"></label>
+  <div class="field-row"><label>Quantity in kg<input name="quantity_kg" type="number" min="0.01" step="0.01" required placeholder="10"></label><label>Pickup area<input name="pickup_area" maxlength="100" required placeholder="Sector 18"></label></div>
+  <label>Collect before<input name="expiry_time" type="datetime-local" required></label>
+  <button class="button button-primary" type="submit">Post listing</button>
+</form>
+{% else %}<div class="empty-state"><h3>Add a donor first</h3><p>A food listing needs an existing donor.</p><a class="button button-primary" href="{{ url_for('new_donor') }}">Register a donor</a></div>{% endif %}
+</section>
+{% endblock %}

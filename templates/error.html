@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Database error | MealBridge{% endblock %}
+{% block content %}<section class="empty-state error-page"><div class="empty-icon">!</div><h1>Could not load the database</h1><p>Check that MySQL is running and that you ran both SQL setup scripts.</p><pre>{{ message }}</pre><a class="button button-primary" href="{{ url_for('home') }}">Try again</a></section>{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}MealBridge | Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">SURPLUS FOOD RESCUE</span>
+    <h1>Good food deserves<br><em>another table.</em></h1>
+    <p>Connect local food donors with NGOs ready to collect and share meals in their community.</p>
+    <a class="button button-light" href="{{ url_for('new_listing') }}">Post a food listing <span>→</span></a>
+  </div>
+  <div class="hero-art" aria-hidden="true"><div class="plate"><span>🥗</span></div><div class="leaf leaf-one"></div><div class="leaf leaf-two"></div><div class="hero-note">Share more.<br><b>Waste less.</b></div></div>
+</section>
+
+<section class="stats" aria-label="Project summary">
+  <article class="stat-card"><span class="stat-icon mint">▣</span><div><strong>{{ stats.available }}</strong><span>Available listings</span></div></article>
+  <article class="stat-card"><span class="stat-icon peach">♧</span><div><strong>{{ stats.donors }}</strong><span>Food donors</span></div></article>
+  <article class="stat-card"><span class="stat-icon lilac">♡</span><div><strong>{{ stats.ngos }}</strong><span>Partner NGOs</span></div></article>
+  <article class="stat-card"><span class="stat-icon mint">♙</span><div><strong>{{ stats.volunteers }}</strong><span>Volunteers</span></div></article>
+  <article class="stat-card"><span class="stat-icon yellow">↗</span><div><strong>{{ stats.claims }}</strong><span>Food claims</span></div></article>
+</section>
+
+<section class="section-heading">
+  <div><span class="eyebrow">READY FOR COLLECTION</span><h2>Available food</h2></div>
+  <a class="text-link" href="{{ url_for('new_listing') }}">+ Add a listing</a>
+</section>
+{% if listings %}
+<section class="listing-grid">
+  {% for item in listings %}
+  <article class="food-card">
+    <div class="food-top"><span class="food-emoji">🍲</span><span class="status-pill">Available</span></div>
+    <h3>{{ item.food_name }}</h3>
+    <p class="muted">Offered by {{ item.donor_name }}</p>
+    <div class="food-details"><span><b>{{ item.quantity_kg }}</b> kg</span><span>{{ item.pickup_area }}</span></div>
+    <div class="expiry">Collect before {{ item.expiry_time.strftime('%d %b, %I:%M %p') }}</div>
+    {% if ngos %}
+    <form class="claim-form" method="post" action="{{ url_for('claim_listing', listing_id=item.listing_id) }}">
+      <label class="sr-only" for="ngo-{{ item.listing_id }}">Choose NGO</label>
+      <select id="ngo-{{ item.listing_id }}" name="ngo_id" required><option value="">Choose an NGO</option>{% for ngo in ngos %}<option value="{{ ngo.ngo_id }}">{{ ngo.ngo_name }}</option>{% endfor %}</select>
+      <button class="button button-primary" type="submit">Claim food</button>
+    </form>
+    {% else %}<p class="help-text">Register an NGO to claim this food.</p>{% endif %}
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<section class="empty-state"><div class="empty-icon">🍃</div><h3>No food listings right now</h3><p>Add a donor and post a food listing to get started.</p><a class="button button-primary" href="{{ url_for('new_listing') }}">Post a listing</a></section>
+{% endif %}
+
+<section class="section-heading recent-heading"><div><span class="eyebrow">FOLLOW THE FOOD</span><h2>Recent claims</h2></div><a class="text-link" href="{{ url_for('reports') }}">View reports →</a></section>
+{% if claims %}
+<section class="table-card"><table><thead><tr><th>Food</th><th>NGO</th><th>Claimed</th><th>Pickup volunteer</th><th>Status</th><th>Next step</th></tr></thead><tbody>
+{% for claim in claims %}<tr><td class="food-name">{{ claim.food_name }}</td><td>{{ claim.ngo_name }}</td><td>{{ claim.claim_time.strftime('%d %b %Y') }}</td><td>{{ claim.volunteer_name or 'Not assigned' }}</td><td><span class="status-text">{{ claim.claim_status.replace('_',' ') }}</span></td><td>
+{% if claim.claim_status == 'CLAIMED' %}
+  {% if claim.pickup_id and claim.pickup_status == 'ASSIGNED' %}<form method="post" action="{{ url_for('complete_pickup', pickup_id=claim.pickup_id) }}"><button class="small-button" type="submit">Mark picked up</button></form>
+  {% elif not claim.pickup_id %}{% set ngo_volunteers = volunteers_by_ngo.get(claim.ngo_id, []) %}{% if ngo_volunteers %}<form class="assign-form" method="post" action="{{ url_for('assign_pickup', claim_id=claim.claim_id) }}"><select name="volunteer_id" required aria-label="Choose a pickup volunteer"><option value="">Choose volunteer</option>{% for volunteer in ngo_volunteers %}<option value="{{ volunteer.volunteer_id }}">{{ volunteer.volunteer_name }}</option>{% endfor %}</select><button class="small-button" type="submit">Assign</button></form>{% else %}<a class="text-link" href="{{ url_for('new_volunteer') }}">Add volunteer</a>{% endif %}{% endif %}
+{% elif claim.claim_status == 'PICKED_UP' %}<form method="post" action="{{ url_for('advance_claim', claim_id=claim.claim_id) }}"><button class="small-button" type="submit">Mark distributed</button></form>
+{% else %}<span class="muted">Complete</span>{% endif %}</td></tr>{% endfor %}
+</tbody></table></section>
+{% else %}<p class="muted empty-line">No claims recorded yet. Claims will appear here.</p>{% endif %}
+{% endblock %}

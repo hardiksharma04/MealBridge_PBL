@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Add NGO | MealBridge{% endblock %}
+{% block content %}
+<section class="form-page"><a class="back-link" href="{{ url_for('home') }}">← Back to home</a><span class="eyebrow">COMMUNITY PARTNERS</span><h1>Register an NGO</h1><p class="form-intro">Add an organisation that can collect and distribute food.</p>
+<form class="form-card" method="post">
+  <label>NGO name<input name="ngo_name" maxlength="100" required placeholder="e.g. Hope Community Kitchen"></label>
+  <label>Phone <span class="optional">Optional</span><input name="phone" maxlength="20" placeholder="Contact number"></label>
+  <label>Area<input name="area" maxlength="100" required placeholder="Neighbourhood or sector"></label>
+  <button class="button button-primary" type="submit">Save NGO</button>
+</form></section>
+{% endblock %}

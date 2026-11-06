@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Add donor | MealBridge{% endblock %}
+{% block content %}
+<section class="form-page"><a class="back-link" href="{{ url_for('home') }}">← Back to home</a><span class="eyebrow">GROW THE NETWORK</span><h1>Register a food donor</h1><p class="form-intro">Add a cafe, restaurant, or canteen that can share surplus food.</p>
+<form class="form-card" method="post">
+  <label>Business name<input name="donor_name" maxlength="100" required placeholder="e.g. Sunrise Cafe"></label>
+  <label>Business type<input name="donor_type" maxlength="30" required placeholder="Cafe, restaurant, canteen"></label>
+  <label>Phone <span class="optional">Optional</span><input name="phone" maxlength="20" placeholder="Contact number"></label>
+  <label>Area<input name="area" maxlength="100" required placeholder="Neighbourhood or sector"></label>
+  <button class="button button-primary" type="submit">Save donor</button>
+</form></section>
+{% endblock %}
